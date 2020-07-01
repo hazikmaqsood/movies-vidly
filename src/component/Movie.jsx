@@ -35,7 +35,7 @@ const Movies = () => {
   
 
   if (movie.MovieData.length === 0)
-    return <Alert severity="error">There are No Movie Here</Alert>;
+    return <Alert severity="error">There are No Movies Here</Alert>;
 
   return (
     <TableContainer component={Paper}>
