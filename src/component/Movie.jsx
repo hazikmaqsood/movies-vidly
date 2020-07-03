@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { getMovies } from "../services/fakeMovieService";
 import Heart from "./Heart";
+import Pagination from "./pagination";
 import {
   Button,
   Paper,
@@ -18,6 +19,9 @@ const Movies = () => {
     MovieData: getMovies(),
   });
 
+  const [pagi, setPagi] = useState({
+    pageSize: 4,
+  });
   const handleDel = (del_id) => {
     const movieDel = movie.MovieData.filter((item) => item._id !== del_id);
     setMovie({ MovieData: movieDel });
@@ -26,13 +30,11 @@ const Movies = () => {
   const handleLiked = (item) => {
     const likeArray = [...movie.MovieData];
     const index = likeArray.indexOf(item);
-    likeArray[index] = {...item};
-    likeArray[index].like = !likeArray[index].like
-    setMovie({MovieData: likeArray});
-    console.log(likeArray)
+    likeArray[index] = { ...item };
+    likeArray[index].like = !likeArray[index].like;
+    setMovie({ MovieData: likeArray });
+    console.log(likeArray);
   };
-
-  
 
   if (movie.MovieData.length === 0)
     return <Alert severity="error">There are No Movies Here</Alert>;
@@ -42,7 +44,6 @@ const Movies = () => {
       <Alert severity="info">There are {movie.MovieData.length} Movie is</Alert>
 
       <Table aria-label="caption table">
-        <caption>A basic table example with a caption</caption>
         <TableHead>
           <TableRow>
             <TableCell align="center">Title</TableCell>
@@ -75,6 +76,7 @@ const Movies = () => {
           ))}
         </TableBody>
       </Table>
+        <Pagination totalCount={movie.MovieData.length} onPagi={pagi.pageSize} />
     </TableContainer>
   );
 };
