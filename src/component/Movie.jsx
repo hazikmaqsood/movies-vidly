@@ -97,7 +97,7 @@ const Movies = () => {
       <Pagination
         totalCount={movie.MovieData.length}
         changePage={handleChangePage}
-        RowPerPage={handleChangeRowsPerPage}
+        onChangeRow={handleChangeRowsPerPage}
         page={page}
         rowsPerPage={rowsPerPage}
       />
