@@ -1,24 +1,26 @@
-import React from 'react';
-import Pagination from '@material-ui/lab/Pagination';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import TablePagination from "@material-ui/core/TablePagination";
 
-const useStyle = makeStyles({
-    pagi: {
-        margin: '30px 0'
-    }
-});
 
 
 const Pagi = (props) => {
-    const classes = useStyle();
-    // console.log("Hello this is Pagi page ",props.totalCount, props.onPagi);
-    const pagiValue = Math.ceil(props.totalCount / props.onPagi);
-    return(
-         
-        <div> 
-        <Pagination className={classes.pagi} count={pagiValue} color="primary" />
-        </div>
-    );
-}
+  
+  return (
+    <div>
+
+
+      <TablePagination
+        component="div"
+        rowsPerPageOptions={[5, 10, 20]}
+        count={props.totalCount}
+        page={props.page}
+        onChangePage={props.changePage}
+        onChangeRowsPerPage={props.RowPerPage}
+        rowsPerPage={props.rowsPerPage}
+
+      />
+    </div>
+  );
+};
 
 export default Pagi;
