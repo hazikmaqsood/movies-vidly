@@ -1,107 +1,140 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import MovieTable from "./movieTable";
 import { getMovies } from "../services/fakeMovieService";
-import Heart from "./Heart";
+import { getGenres } from "../services/fakeGenreService";
+import { Paper, TableContainer } from "@material-ui/core";
 import Pagination from "./pagination";
 import { Paginate } from "../utils/paginates";
-import {
-  Button,
-  Paper,
-  TableRow,
-  TableHead,
-  TableContainer,
-  TableCell,
-  TableBody,
-  Table,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import TableSearch from "./TableSearch";
+import TableFilter from "./TableFilter";
+import Grid from "@material-ui/core/Grid";
 
+import { Alert } from "@material-ui/lab";
+import { makeStyles } from "@material-ui/core/styles";
+
+// ===== CSS EDIT ===== //
+const useStyles = makeStyles(() => ({
+  gridValue: {
+    marginTop: 20,
+  },
+}));
+
+// ===== Main Movie Arrow Function Start ===== //
 const Movies = () => {
   const [movie, setMovie] = useState({
-    MovieData: getMovies(),
+    MovieData: [],
   });
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  // ===== State Method ===== //
+  const classes = useStyles();
+  const [search, setSearch] = useState("");
+  const [filterSearch, setFilterSearch] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [genre, setGenre] = useState([]);
+  const [selectGenre, setSelectGenre] = useState([]);
 
+  // ===== Handle FilterButton  =====//
+  const handleFilterButton = (item) => {
+    const checkSearchTerm = item.name === "All Genre" ? "" : item.name;
+    setSearch(checkSearchTerm);
+    setSelectGenre(item);
+    setPage(0);
+  };
+
+  // ===== Handle Search  =====//
+  const handleInputSearch = (event) => {
+    setSearch(event.target.value);
+    setPage(0);
+  };
+
+  // ===== Handle Table Page change  =====//
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  // ===== Handle Change Row per page  =====//
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, movie.MovieData.length - page * rowsPerPage);
-
+  // ===== Handle Delete Button  =====//
   const handleDel = (del_id) => {
     const movieDel = movie.MovieData.filter((item) => item._id !== del_id);
     setMovie({ MovieData: movieDel });
   };
 
+  // ===== Handle Like Button  =====//
   const handleLiked = (item) => {
     const likeArray = [...movie.MovieData];
     const index = likeArray.indexOf(item);
     likeArray[index] = { ...item };
     likeArray[index].like = !likeArray[index].like;
     setMovie({ MovieData: likeArray });
-    console.log(likeArray);
   };
 
-  if (movie.MovieData.length === 0)
-    return <Alert severity="error">There are No Movies Here</Alert>;
+  useEffect(() => {
+    const allGenre = [{ name: "All Genre", id: "00000" }, ...getGenres()];
+    setGenre(allGenre);
+    setMovie({ MovieData: getMovies() });
+  }, []);
 
-  const newMoviesArray = Paginate(movie.MovieData, page, rowsPerPage);
+  useEffect(() => {
+    setFilterSearch(
+      movie.MovieData.filter(
+        (item) =>
+          item.title.toLowerCase().includes(search.toLowerCase()) ||
+          item.genre.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.numberInStock.toString().includes(search.toLowerCase())
+      )
+    );
+    setPage(0);
+  }, [search, movie.MovieData]);
+
+  // ===== get active movies length =====//
+  const getLength = filterSearch.length;
+
+  // ===== Empty Rows for table  =====//
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, getLength - page * rowsPerPage);
+
+  // ===== Pagination Login  =====//
+  const newMoviesArray = Paginate(filterSearch, page, rowsPerPage);
+
   return (
-    <TableContainer component={Paper}>
-      <Alert severity="info">There are {movie.MovieData.length} Movie in DataBase</Alert>
+    <div>
+      <Alert severity="info">There are {getLength} Movie in DataBase</Alert>
 
-      <Table aria-label="caption table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center">Title</TableCell>
-            <TableCell align="center">Genre</TableCell>
-            <TableCell align="center">Stock</TableCell>
-            <TableCell align="center">Rate</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {newMoviesArray.map((item) => (
-            <TableRow key={item._id}>
-              <TableCell align="center">{item.title}</TableCell>
-              <TableCell align="center">{item.genre.name}</TableCell>
-              <TableCell align="center">{item.numberInStock}</TableCell>
-              <TableCell align="center">{item.dailyRentalRate}</TableCell>
-              <TableCell align="center">
-                <Heart onLiked={() => handleLiked(item)} movies={item} />
-              </TableCell>
+      <Grid className={classes.gridValue} container spacing={2}>
+        <Grid item xs={4}>
+          <TableFilter
+            genre={genre}
+            filterButton={handleFilterButton}
+            selectedGenre={selectGenre}
+          />
+        </Grid>
 
-              <TableCell>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleDel(item._id)}
-                >
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 68 * emptyRows }}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <Pagination
-        totalCount={movie.MovieData.length}
-        changePage={handleChangePage}
-        onChangeRow={handleChangeRowsPerPage}
-        page={page}
-        rowsPerPage={rowsPerPage}
-      />
-    </TableContainer>
+        <Grid item xs={8}>
+          <TableContainer component={Paper}>
+            <TableSearch searchValue={search} onSearch={handleInputSearch} />
+            <MovieTable
+              newMoviesArray={newMoviesArray}
+              handleLiked={handleLiked}
+              handleDel={handleDel}
+              emptyRows={emptyRows}
+            />
+            <Pagination
+              totalCount={getLength}
+              changePage={handleChangePage}
+              onChangeRow={handleChangeRowsPerPage}
+              page={page}
+              rowsPerPage={rowsPerPage}
+            />
+          </TableContainer>
+        </Grid>
+      </Grid>
+    </div>
   );
 };
 

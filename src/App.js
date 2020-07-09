@@ -7,7 +7,7 @@ function App() {
     <div className="App">
         <Container maxWidth="md">
 
-      <h1> Hello World</h1>
+      <h1> Home</h1>
       <Movie />
       </Container>
     </div>
