@@ -8,7 +8,7 @@ import { Paginate } from "../utils/paginates";
 import TableSearch from "./TableSearch";
 import TableFilter from "./TableFilter";
 import Grid from "@material-ui/core/Grid";
-
+import Layout from "../layout/Layout";
 import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -89,7 +89,6 @@ const Movies = () => {
           item.numberInStock.toString().includes(search.toLowerCase())
       )
     );
-    setPage(0);
   }, [search, movie.MovieData]);
 
   // ===== get active movies length =====//
@@ -103,7 +102,7 @@ const Movies = () => {
   const newMoviesArray = Paginate(filterSearch, page, rowsPerPage);
 
   return (
-    <div>
+    <Layout>
       <Alert severity="info">There are {getLength} Movie in DataBase</Alert>
 
       <Grid className={classes.gridValue} container spacing={2}>
@@ -134,7 +133,7 @@ const Movies = () => {
           </TableContainer>
         </Grid>
       </Grid>
-    </div>
+    </Layout>
   );
 };
 

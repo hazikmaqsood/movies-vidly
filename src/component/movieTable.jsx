@@ -1,6 +1,7 @@
 import React from 'react';
 import Heart from "./Heart";
-
+import Link from "@material-ui/core/Link";
+import {Link as RouterLink} from 'react-router-dom';
 import {
     Button,
     TableRow,
@@ -25,7 +26,7 @@ const MovieTable = ({newMoviesArray, handleLiked,handleDel,emptyRows}) => {
               <TableBody>
                 {newMoviesArray.map((item) => (
                   <TableRow key={item._id}>
-                    <TableCell align="center">{item.title}</TableCell>
+                    <TableCell align="center"> <Link component={RouterLink} to={`/movie/${item._id}`}> {item.title} </Link> </TableCell>
                     <TableCell align="center">{item.genre.name}</TableCell>
                     <TableCell align="center">{item.numberInStock}</TableCell>
                     <TableCell align="center">{item.dailyRentalRate}</TableCell>
