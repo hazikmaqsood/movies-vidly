@@ -4,7 +4,8 @@ import Customer from "./routes/Customer";
 import Error from "./routes/Error";
 import Rental from "./routes/Rental";
 import Navbar from "./component/Navbar";
-import Login from "./routes/Login";
+import Login from "./routes/Hookform";
+import Register from "./routes/Register";
 import Tableform from "./routes/Tableform";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -21,6 +22,7 @@ function App() {
         <Route path="/rental" component={Rental} />
         <Route path="/customer" component={Customer} />
         <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
         <Redirect exact from="/" to="/movie" />
         <Route path="*" component={Error} />
       </Switch>

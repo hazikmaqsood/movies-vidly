@@ -47,6 +47,10 @@ const Navbar = () => {
       navItem: "Login",
       path: "/login",
     },
+    {
+      navItem: "Register",
+      path: "/register",
+    },
   ];
 
   return (

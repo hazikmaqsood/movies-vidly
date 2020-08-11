@@ -27,7 +27,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(account)
+    console.log(account);
   };
 
   return (
@@ -37,6 +37,7 @@ const Login = () => {
           Login Authentication
         </Typography>
         <TextField
+          
           fullWidth
           margin="normal"
           id="outlined-basic"
@@ -44,6 +45,8 @@ const Login = () => {
           variant="outlined"
           name="username"
           onChange={handleInputChange}
+          // error={text === ""}
+          // helperText={text === "" ? 'Empty!' : ' '}
         />
         <TextField
           fullWidth
@@ -54,9 +57,10 @@ const Login = () => {
           type="password"
           name="password"
           onChange={handleInputChange}
+          
         />
 
-        <Button fullWidth variant="contained" color="secondary" type="submit" >
+        <Button fullWidth variant="contained" color="secondary" type="submit">
           Submit
         </Button>
       </form>
